@@ -1,0 +1,85 @@
+<!--https://www.baeldung.com/thymeleaf-in-spring-mvc-->
+<!--https://www.baeldung.com/spring-thymeleaf-3-expressions-->
+<!--https://www.baeldung.com/thymeleaf-arrays-->
+<!--https://www.thymeleaf.org/doc/tutorials/3.1/usingthymeleaf.html#standard-expression-syntax-->
+
+<!--https://frontbackend.com/tag/Utility-->
+<!--https://www.thymeleaf.org/apidocs/thymeleaf/3.0.0.RELEASE/index.html?org/thymeleaf/expression/Strings.html-->
+<!--https://www.thymeleaf.org/apidocs/thymeleaf/3.0.0.RELEASE/index.html?org/thymeleaf/expression/Maps.html-->
+
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+    <h1 th:text="${message}">Header #1</h1>
+    <!--
+        context.getMessage()
+    -->
+
+
+    <div th:replace="fragments/header"></div>
+
+    <!--
+    если размер группы студентов больше 5, то напечатать слово БОЛЬШАЯ,
+    если меньше 5, напечатать слово SMALL
+    ${#lists.size(list)}
+    -->
+    <br/>
+    <span th:if="${#lists.size(students)} > 5" th:text="BIG"/>
+    <span th:if="${#lists.size(students)} <= 5" th:text="SMALL"/>
+    <br/>
+    <div th:switch="${#lists.size(students)} > 5">
+        <p th:case="true">Group is BIG</p>
+        <p th:case="false">Group is SMALL</p>
+    </div>
+    <div>
+        <span th:text="( ${students.size()} > 5 ) ? ('BIG') : ('SMALL')"></span>
+    </div>
+
+    <br/>
+    teacher is: [[(${teacher.working}) ? ('Active') : ('Inactive')]]
+    <br/>
+
+    <div th:if="${status == null}">
+        <span>status in null</span>
+    </div>
+
+    <div th:switch="${teacher.working}">
+        <p th:case="true">Teacher is active</p>
+        <p th:case="false">Teacher is not active</p>
+        <p th:case="*">Teacher is some other thing</p>
+    </div>
+
+
+    <h2 th:text="${teacher.id}">Id</h2>
+    <h2 th:text="${teacher.name}">Name</h2>
+
+    <h3 th:text="${students[2].last}"></h3>
+
+<!--    <ul>-->
+<!--        <li th:each="student: ${students}" th:text="${student.last}">Student</li>-->
+<!--    </ul>-->
+
+    <ul>
+        <li th:each="student: ${students}" th:text="|Student full name is ${student.first} ${student.last}|">Student</li>
+    </ul>
+
+    <!--
+        При выводе списка студентов, если длина фамилии больше 6 символов, вывести LONG
+        если меньше, вывести SHORT
+    -->
+
+    <span th:each="student: ${students}">
+        <span th:text="${student.last}"></span>
+        <span th:text="(${ #strings.endsWith(student.last, 'a') }) ? ('F') : ('M')"></span>
+        <span th:text="( ${student.age} > 25 ) ? ('Аспирант') : ('Студент')"></span>
+        <span th:class="(${ #strings.endsWith(student.last, 'a') }) ? ('F') : ('M')"></span>
+        <span th:text="(${#strings.length(student.last)} > 6 ) ? ('LONG') : ( 'SHORT' )"></span>
+        <a th:href="@{/student/{id}(id=${student.id})}">Change Student</a>
+        <br/>
+    </span>
+
+    <a th:href="@{/teacher(id=${teacher.id}, name=${teacher.name})}">Link to a Teacher</a><br/>
+    <a th:href="@{/student/{id}(id=${students[0].id})}">Student #0</a><br/>
+
+    <div th:replace="fragments/footer"></div>
+
+</html>
