@@ -18,13 +18,14 @@ public class Student {
     // идентификатор был не null и больше 0
     @NotNull(message = "Id should be used")
     @Min(value = 1, message = "Should be greater than 0")
+    @Between(from = 10, to = 20, message = "Id should be in range [10..20]")
     private Long id;
 
     // имя должно быть не пустое
     //@NotEmpty(message = "First name should be used")
     @NotBlank(message = "Name is mandatory")
     // напишите код, который проверит, что имя содержт слово max
-    @Pattern(regexp = ".*[Mm][Aa][Xx].*", message = "Name should contain max")
+    // @Pattern(regexp = ".*[Mm][Aa][Xx].*", message = "Name should contain max")
     private String first;
 
     // фамилия должна быть не пустая
@@ -35,6 +36,7 @@ public class Student {
     @NotNull(message = "Age should be used")
     @Min(value = 18, message = "Should be greater than 18")
     @Max(value = 120, message = "Should be greater than 120")
+    @Age(message = "Age should be even number")
     private Integer age;
 
     public Student(Long id, String first, String last, Integer age) {
@@ -74,5 +76,15 @@ public class Student {
 
     public void setAge(Integer age) {
         this.age = age;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "id=" + id +
+                ", first='" + first + '\'' +
+                ", last='" + last + '\'' +
+                ", age=" + age +
+                '}';
     }
 }

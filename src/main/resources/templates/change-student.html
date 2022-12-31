@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<form method="post" th:action="@{/students}" th:object="${student}">
+<form method="post" th:action="@{/student/{id}(id=${student.id})}" th:object="${student}">
 
     <input type="hidden" th:field="*{id}" id="id" placeholder="Id" />
 

@@ -73,7 +73,7 @@
         <span th:text="( ${student.age} > 25 ) ? ('Аспирант') : ('Студент')"></span>
         <span th:class="(${ #strings.endsWith(student.last, 'a') }) ? ('F') : ('M')"></span>
         <span th:text="(${#strings.length(student.last)} > 6 ) ? ('LONG') : ( 'SHORT' )"></span>
-        <a th:href="@{/student/{id}(id=${student.id})}">Change Student</a>
+        <a th:href="@{/student/{id}(id=${student.id})}" th:text="${'Student #' + student.id}">Change Student</a>
         <br/>
     </span>
 

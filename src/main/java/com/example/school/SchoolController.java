@@ -1,16 +1,25 @@
 package com.example.school;
 
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @Controller
 public class SchoolController {
+
+    @Autowired
+    SchoolScheduler scheduler;
+
     private List<Student> students = new ArrayList<>(
             List.of(
                     new Student(1L, "Max", "Petrov", 19),
@@ -25,6 +34,10 @@ public class SchoolController {
 
     @GetMapping("/students")
     public String getStudents(Model model) {
+
+        scheduler.scheduleTask(new Date(
+                System.currentTimeMillis() + 5_000
+        ));
 
         String status = null;
 
@@ -61,22 +74,34 @@ public class SchoolController {
             @PathVariable(name = "studentId") Long studentId,
             Model model
     ) {
-        int studId = Math.toIntExact(studentId);
-        model.addAttribute("student", students.get(studId-1));
+        Student student = students.stream()
+                .filter(s -> s.getId().equals(studentId))
+                .findFirst().get();
+        model.addAttribute("student", student);
         return "change-student";
     }
 
-    @PostMapping("/student")
+    Logger logger = LoggerFactory.getLogger(SchoolController.class);
+
+    @PostMapping("/student/{studentId}")
     public String updateStudent(
-            //@PathVariable(name = "studentId") Long studentId,
+            @PathVariable(name = "studentId") Long studentId,
             @Valid @ModelAttribute Student student,
             BindingResult result,
             Model model
     ) {
+        // error, warn, trace, info, debug
+
+        logger.debug("updateStudent id: " + " student: " + student);
+
         if (result.hasErrors()) {
             return "change-student";
         }
-        students.set(Math.toIntExact(student.getId()), student);
+        for (int i = 0; i < students.size(); i++) {
+            if (students.get(i).getId().equals(studentId)) {
+                students.set(i, student);
+            }
+        }
         return "redirect:/students";
     }
 
